@@ -1,8 +1,4 @@
 
-LRS <luisrafaelrendon10@gmail.com>
-21:37 (hace 0 minutos)
-para mí
-
 # Travel Assistant IA
 
 Asistente inteligente de viajes desarrollado en Node.js con Fastify. Permite consultar clima, ubicaciones y obtener recomendaciones mediante integración con APIs externas y modelos de lenguaje.
