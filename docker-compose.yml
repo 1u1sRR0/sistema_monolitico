@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: travel_assistant_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: practica_sd
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: caro
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
+
+  app:
+    build: .
+    container_name: travel_assistant_app
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    env_file:
+      - .env.docker
+    ports:
+      - "3001:3001"
+
+volumes:
+  postgres_data:
