@@ -28,3 +28,4 @@ async function getLocation(city) {
 }
 
 module.exports = { getLocation };
+

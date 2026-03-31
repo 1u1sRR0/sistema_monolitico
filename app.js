@@ -14,6 +14,7 @@ const fastify = require('fastify')({
 const pool = require('./db/postgres');
 const { startTelegramBot } = require('./telegram/bot');
 
+// ✅ Swagger
 async function registerSwagger() {
   await fastify.register(require('@fastify/swagger'), {
     openapi: {
@@ -34,9 +35,11 @@ async function registerSwagger() {
   });
 }
 
+// ✅ Rutas
 async function registerRoutes() {
-  fastify.register(require('./routes/auth'), { prefix: '/api/auth' });
-  fastify.register(require('./routes/query'), { prefix: '/api' });
+  // ⚠️ IMPORTANTE: usar await
+  await fastify.register(require('./routes/auth'), { prefix: '/api/auth' });
+  await fastify.register(require('./routes/query'), { prefix: '/api' });
 
   fastify.get('/api/status', async () => {
     const result = await pool.query('SELECT NOW()');
@@ -70,12 +73,19 @@ async function registerRoutes() {
   });
 }
 
+// ✅ Start server
 const start = async () => {
   try {
     const port = Number(process.env.PORT) || 3000;
 
     await registerSwagger();
     await registerRoutes();
+
+    // 🔥 MUY IMPORTANTE → asegura que todas las rutas están cargadas
+    await fastify.ready();
+
+    // 🔥 ahora sí imprime TODAS las rutas
+    console.log(fastify.printRoutes());
 
     await fastify.listen({
       port: port,
@@ -84,7 +94,9 @@ const start = async () => {
 
     console.log(`Servidor en http://localhost:${port}`);
 
+    // 🚀 Telegram después de levantar servidor
     startTelegramBot();
+
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
